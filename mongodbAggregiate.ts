@@ -18,7 +18,26 @@ db.getCollection("massive-data").aggregate([
 
 //Question 2:
 //- Retrieve the names and email addresses of individuals who are active (`isActive: true`) and have a favorite fruit of "banana."
-
+db.getCollection("massive-data").aggregate([
+    {
+      $match: {isActive: true, favoriteFruit: "banana"}  
+    },
+    {
+        $group: {
+            _id: "$gender",
+            count: {
+                $sum: 1
+            },
+            users: {
+                $push: {
+                    name: "$name",
+                    email: "$email",
+                    favoriteFruit: "$favoriteFruit"
+                }
+            },
+        }
+    },
+    ])
 //Question 3:
 //- Find the average age of individuals for each favorite fruit, then sort the results in descending order of average age.
 
