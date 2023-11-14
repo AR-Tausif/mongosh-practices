@@ -58,7 +58,28 @@ db.products.aggregate([
     ])
 
 // Calculate the total quantity and average price of products in each order. Display the order ID, total quantity, and average price.
-
+db.orders.aggregate([
+    {
+        $unwind: "$products"
+    },
+    {
+        $lookup: {
+               from: "products",
+               localField: "products.product_id",
+               foreignField: "_id",
+               as: "productDetails"
+             }
+    },
+    {
+        $unwind: "$productDetails"
+    }, 
+    {
+        $group: { _id: "$_id",  user_id: { $first: "$user_id" },calculateQty: {$sum: "$products.quantity"}, avgPrice: {$avg: "$productDetails.price"}}
+    },
+    {
+        $sort: {calculateQty: 1}
+    }
+    ])
 // For the "users" collection, suggest an indexing strategy to optimize queries related to user authentication, considering fields like email. 
 
 // For the "orders" collection, identify the columns that are frequently used in queries (e.g., user_id, product_id). Propose a set of indexes to optimize query performance.
