@@ -30,6 +30,11 @@ db.users.aggregate([
     ])
 
 // Calculate the average price for each product category. Display the category and average price.
+db.products.aggregate([
+    {
+        $group: { _id: "$category", count: { $sum: 1 }, avgPrice: { $avg: "$price" } }
+    }
+])
 
 // Find the average order quantity and price for each product category. Display the category, average quantity, and average price. 
  
